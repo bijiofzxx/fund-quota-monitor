@@ -1,0 +1,83 @@
+# ===================================
+# Fund Quota Monitor Configuration
+# 基金申购限额监控系统配置文件
+# ===================================
+
+# 监控配置
+monitor:
+  # 监控关键词列表（可以是基金类型、名称等）
+  keywords:
+    - "纳斯达克100"
+    - "标普500"
+    # - "黄金ETF"
+    # - "科创板"
+  
+  # 申购限额阈值（元）
+  # 当基金申购限额 >= 此值时触发通知
+  quota_threshold: 1000
+  
+# 调度配置
+schedule:
+  # 每日搜索新基金时间（HH:MM格式）
+  search_funds: "08:00"
+  
+  # 限额检查时间表
+  check_quota:
+    - "09:00"  # 开盘后
+    - "12:00"  # 午间
+    - "15:00"  # 收盘时
+    - "18:00"  # 晚间
+    - "21:00"  # 夜间
+  
+# 天天基金网配置（通常无需修改）
+eastmoney:
+  search_url: "https://fund.eastmoney.com/data/fundsearch.html"
+  detail_url: "https://fund.eastmoney.com/{code}.html"
+  favorite_url: "https://favor.fund.eastmoney.com/"
+  
+# 浏览器配置
+browser:
+  # 是否使用无头模式（建议首次登录时设为false）
+  headless: false
+  
+  # 浏览器数据目录（存储登录状态）
+  user_data_dir: "./browser_data/user_data"
+  
+  # 视口大小
+  viewport:
+    width: 1920
+    height: 1080
+  
+# 通知配置
+notification:
+  # 是否启用通知
+  enabled: true
+  
+  # 通知方式（可选: email, wecom）
+  methods:
+    - email
+  
+  # 邮件配置
+  email:
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    sender: "your-email@gmail.com"
+    # Gmail需要使用应用专用密码
+    # 获取方式: Google账户 -> 安全性 -> 应用专用密码
+    password: "your-app-password"
+    receivers:
+      - "receiver1@example.com"
+      # - "receiver2@example.com"
+  
+  # 企业微信配置（可选）
+  wecom:
+    enabled: false
+    # 企业微信机器人Webhook地址
+    webhook_url: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR-KEY"
+
+# 数据存储配置
+storage:
+  quota_history_dir: "./data/quota_history"
+  logs_dir: "./data/logs"
+  master_file: "./config/funds_master.json"
+  state_file: "./data/notification_state.json"
