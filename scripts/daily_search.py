@@ -29,8 +29,8 @@ def main():
         
         # 检查登录
         if not manager.check_login_status():
-            logging.error("未登录!请先运行 python scripts/init_browser.py")
-            return
+            logging.error("未登录!直接登录或者 关闭程序运行 python scripts/init_browser.py")
+            input("等待登陆中.... 回车确认登录继续运行")
         
         searcher = FundSearcher(manager, config)
         new_count = searcher.sync_favorites()
