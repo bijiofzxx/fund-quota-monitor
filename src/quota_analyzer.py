@@ -42,8 +42,7 @@ class QuotaAnalyzer:
             return pd.DataFrame(), False
         
         # 筛选符合条件的基金
-        qualified = df[df['quota'] >= self.threshold].copy()
-        
+        qualified = df[(df['quota'] >= self.threshold) & (df['can_purchase'] == True)].copy()
         self.logger.info(f"\n{'='*50}")
         self.logger.info(f"限额分析结果:")
         self.logger.info(f"  阈值: {self.threshold} 元")
@@ -64,12 +63,14 @@ class QuotaAnalyzer:
         today = datetime.now().strftime('%Y-%m-%d')
         
         # 检查今天是否已通知过这些基金
-        notified_today = set(self.notification_state.get('notified_today', []))
         current_codes = set(qualified_df['code'].tolist())
         
         # 有新的符合条件的基金
-        new_funds = current_codes - notified_today
-        
+        new_funds = current_codes
+        if 'last_notification' not in self.notification_state:
+            self.notification_state['last_notification'] = dict()
+        if 'notified_today' not in self.notification_state:
+            self.notification_state['lnotified_today'] = []
         if new_funds:
             self.logger.info(f"发现 {len(new_funds)} 只新符合条件的基金")
             # 更新通知状态
