@@ -2,7 +2,7 @@ import smtplib
 import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from typing import List
+
 
 class Notifier:
     """多渠道通知"""
@@ -48,10 +48,10 @@ class Notifier:
             """
             
             msg.attach(MIMEText(html_content, 'html', 'utf-8'))
-            
             # 发送
-            with smtplib.SMTP(email_config['smtp_server'], email_config['smtp_port']) as server:
-                server.starttls()
+            with smtplib.SMTP_SSL(
+                email_config['smtp_server'], 
+                email_config['smtp_port'], timeout=10) as server:
                 server.login(email_config['sender'], email_config['password'])
                 server.send_message(msg)
             
