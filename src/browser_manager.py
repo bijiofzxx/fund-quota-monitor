@@ -76,10 +76,11 @@ class BrowserManager:
             page = self.get_page()
             page.goto(self.config['eastmoney']['favorite_url'], timeout=10000)
             page.wait_for_timeout(2000)
-            
+
             # 检查是否存在登录按钮或用户信息
             # 需要根据实际页面调整选择器
-            is_logged_in = page.locator('text=退出').is_visible(timeout=3000)
+            is_login_text = self.config['is_login_text']
+            is_logged_in = page.locator(f'text={is_login_text}').is_visible(timeout=3000)
             
             self.logger.info(f"登录状态检查: {'已登录' if is_logged_in else '未登录'}")
             return is_logged_in
@@ -100,7 +101,9 @@ class BrowserManager:
         
         try:
             # 等待登录成功的标志元素出现
-            page.wait_for_selector('text=退出', timeout=timeout)
+            is_login_text = self.config['is_login_text']
+            
+            page.wait_for_selector(f'text={is_login_text}', timeout=timeout)
             self.logger.info("✓ 登录成功!")
             return True
         except Exception as e:
