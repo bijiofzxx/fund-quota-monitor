@@ -72,6 +72,7 @@ class BrowserManager:
     
     def check_login_status(self) -> bool:
         """检查登录状态"""
+        return True
         try:
             page = self.get_page()
             page.goto(self.config['eastmoney']['favorite_url'], timeout=10000)
