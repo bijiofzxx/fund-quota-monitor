@@ -53,20 +53,35 @@ def main():
     with open('config/config.yaml', 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
     gap_hour = config['schedule']['gap_hour']
-    try:
-        manager.start()
- 
-        # 检查登录
-        if not manager.check_login_status():
-            logging.error("未登录!直接登录或者 关闭程序运行 python scripts/init_browser.py")
-            input("等待登陆中.... 回车确认登录继续运行")
-        # 采集数据
-        while True:
-            fund_monitor(manager, config)
-            logging.info(f'等待 {gap_hour} 小时将再次检查')
+    is_error = False
+
+    while True:
+        try:
+            manager.start()
+            # 检查登录
+            if not manager.check_login_status():
+                raise ValueError('未登录请重新登录')
+            # 采集数据
+            else:
+                fund_monitor(manager, config)
+        except Exception:
+            import traceback
+            error_msg = traceback.format_exc()
+            print(error_msg)
+            is_error = True
+        finally:
+            manager.close()
+
+        if not is_error:
+            logging.info(f'等待 {gap_hour} 小时将再次检查\n')
             time.sleep(gap_hour * 3600)
-    finally:
-        manager.close()
+        else:
+            notifier = Notifier(config)
+            subject = "【错误】QDII基金限额监控"
+            notifier.send(subject, "基金限额监控错误")
+            print('出现错误退出监控')
+            break
+
 
 if __name__ == "__main__":
     main()
