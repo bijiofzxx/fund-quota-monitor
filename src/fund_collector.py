@@ -30,31 +30,28 @@ class FundCollector:
         try:
             # 查找所有基金分组的表格
             # 根据HTML结构，表格的class为 "em-table em-table-multi em-table-check js-fundlist-table"
-            tables = page.locator('table.em-table.js-fundlist-table').all()
+            table = page.locator('table.em-table.js-fundlist-table[data-type="hk"]').first
             
-            self.logger.info(f"找到 {len(tables)} 个基金分组表格")
+            self.logger.info(f"找到基金分组表格")
             
-            for table_idx, table in enumerate(tables, 1):
-                self.logger.info(f"\n处理第 {table_idx} 个表格...")
-                
-                # 获取该表格所有基金行
-                # 基金行的class包含 "fund-row"
-                fund_rows = table.locator('tbody tr.fund-row').all()
-                
-                self.logger.info(f"  表格 {table_idx} 包含 {len(fund_rows)} 只基金")
-                
-                for row_idx, row in enumerate(fund_rows, 1):
-                    try:
-                        fund_data = self._parse_fund_row(row)
-                        if fund_data:
-                            all_funds_data.append(fund_data)
-                            
-                            # 每10只基金输出一次进度
-                            if row_idx % 10 == 0:
-                                self.logger.info(f"  已处理 {row_idx}/{len(fund_rows)} 只基金...")
-                    except Exception as e:
-                        self.logger.warning(f"  解析第 {row_idx} 只基金失败: {e}")
-                        continue
+            # 获取该表格所有基金行
+            # 基金行的class包含 "fund-row"
+            fund_rows = table.locator('tbody tr.fund-row').all()
+            
+            self.logger.info(f"  表格包含 {len(fund_rows)} 只基金")
+            
+            for row_idx, row in enumerate(fund_rows, 1):
+                try:
+                    fund_data = self._parse_fund_row(row)
+                    if fund_data:
+                        all_funds_data.append(fund_data)
+                        
+                        # 每10只基金输出一次进度
+                        if row_idx % 10 == 0:
+                            self.logger.info(f"  已处理 {row_idx}/{len(fund_rows)} 只基金...")
+                except Exception as e:
+                    self.logger.warning(f"  解析第 {row_idx} 只基金失败: {e}")
+                    continue
             
         except Exception as e:
             self.logger.error(f"采集数据失败: {e}", exc_info=True)
