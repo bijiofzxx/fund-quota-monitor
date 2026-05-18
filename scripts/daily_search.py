@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+import sys
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 """每日搜索新基金并加入自选"""
 
 import sys
