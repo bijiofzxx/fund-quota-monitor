@@ -21,9 +21,11 @@ class FundSearcher:
     
     def _load_master_funds(self) -> Dict[str, Dict]:
         """加载已监控的基金列表"""
+        # 重新加载,清空订阅
         if self.master_file.exists():
-            with open(self.master_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            with open(self.master_file, 'w', encoding='utf-8') as f:
+                json.dump({}, f)
+                self.logger.info(f"清空基金列表，等待重新加载 {self.master_file}")
         return {}
     
     def _save_master_funds(self):
