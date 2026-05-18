@@ -91,7 +91,6 @@ def run_quota_monitor():
     manager = BrowserManager()
     with open('config/config.yaml', 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
-    gap_hour = config['schedule']['gap_hour']
     is_error = False
 
     try:
@@ -111,7 +110,7 @@ def run_quota_monitor():
         manager.close()
 
     if not is_error:
-        logging.info(f'等待 {gap_hour} 小时将再次检查\n')
+        logging.info(f'基金检查成功\n')
     else:
         notifier = Notifier(config)
         subject = "【错误】QDII基金限额监控"
