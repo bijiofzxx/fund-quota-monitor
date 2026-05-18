@@ -77,7 +77,7 @@ def main():
     logger.info("="*60 + "\n")
     
     # 启动时立即执行一次检查
-    logger.info("启动计划任务前,执行一次任务测试...")
+    logger.info("启动计划任务前,执行一次任务测试,请等待测试成功或失败...")
     quota_check_task(python_interpreter=python_interpreter)
     logger.info("任务测试成功,启动计划任务")
     logger.info(f"计划任务时间: {', '.join(schedule_config['check_quota'])}")
