@@ -36,7 +36,8 @@ def run_script(script_path: str, description: str, python_interpreter: str):
         env = os.environ.copy()
         env['PYTHONIOENCODING'] = 'utf-8'
         result = subprocess.run([python_interpreter, script_path],
-                                capture_output=True, text=True,
+                                #capture_output=True,
+                                text=True,
                                 encoding='utf-8', env=env)
         
         if result.returncode == 0:
